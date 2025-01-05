@@ -1,0 +1,9 @@
+services:
+  keras:
+    build:
+      context: ./src
+    volumes:
+      - ./src:/src
+      - ./data:/data
+    environment:
+      KERAS_BACKEND: "jax"
