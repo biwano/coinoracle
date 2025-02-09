@@ -2,9 +2,10 @@ import click
 import requests
 import math
 from datetime import datetime, timezone
-from pandas import DataFrame, read_csv
+import numpy
 import os.path
 import time
+from utils import save_data, load_data
 
 FOLDER = "../data"
 
@@ -12,13 +13,9 @@ def ts(time: datetime):
     return math.floor(time.timestamp()) * 1000
 
 def fetch_one(startTime: datetime) -> list:
-    filename = f"{FOLDER}/{startTime.year:04}-{startTime.month:02}-{startTime.day:02}.csv"
-    click.echo(f"Reading {filename} {startTime}")
+    data = load_data(startTime)
     
-    if os.path.isfile(filename):
-        df = read_csv(filename)
-    
-    else:
+    if not data:
         click.echo(f"Cache failure. Fetching")
         endTime = datetime(day=startTime.day, month=startTime.month, year=startTime.year, 
                         hour=23, minute=59, second=59,tzinfo=timezone.utc)
@@ -29,12 +26,11 @@ def fetch_one(startTime: datetime) -> list:
                                 "startTime": ts(startTime),
                                 "endTime": ts(endTime)
                                     })
-        data = [ [d[0], d[4], d[5] ] for d in x.json()]
-        df = DataFrame(data, columns=["time", "close", "volume"])
-        df.to_csv(filename)
-        time.sleep(0.1)
+        # timestamp, close, volume
+        raw_data = [ [ float(d[0]), float(d[4]), float(d[5]) ] for d in x.json()]
+        data = save_data(startTime, raw_data)
 
-    return df
+    return data
     
 
 @click.command()

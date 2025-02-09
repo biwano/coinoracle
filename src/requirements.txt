@@ -3,3 +3,5 @@ jax
 requests
 click
 pandas
+numpy
+kagglehub
