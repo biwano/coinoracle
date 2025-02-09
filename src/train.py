@@ -2,6 +2,7 @@ import click
 import numpy as np
 import keras
 from keras import layers
+from keras import callbacks
 
 
 def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
@@ -27,6 +28,7 @@ def build_model(
     ff_dim,
     num_transformer_blocks,
     mlp_units,
+    n_classes,
     dropout=0,
     mlp_dropout=0,
 ):
@@ -44,4 +46,61 @@ def build_model(
 
 @click.command()
 def train():
-    pass
+    def readucr(filename):
+        data = np.loadtxt(filename, delimiter="\t")
+        y = data[:, 0]
+        x = data[:, 1:]
+        return x, y.astype(int)
+    
+    x_train, y_train = readucr("../data/train.csv")
+    x_test, y_test = readucr("../data/test.csv")
+
+    x_train = x_train.reshape((x_train.shape[0], x_train.shape[1], 1))
+    x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
+
+    n_classes = len(np.unique(y_train))
+
+    idx = np.random.permutation(len(x_train))
+    x_train = x_train[idx]
+    y_train = y_train[idx]
+
+    y_train[y_train == -1] = 0
+    y_test[y_test == -1] = 0
+
+    input_shape = x_train.shape[1:]
+
+    model = build_model(
+        input_shape,
+        head_size=256,
+        num_heads=4,
+        ff_dim=4,
+        num_transformer_blocks=4,
+        mlp_units=[128],
+        n_classes=n_classes,
+        mlp_dropout=0.4,
+        dropout=0.25,
+    )
+
+    model.compile(
+        loss="sparse_categorical_crossentropy",
+        optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+        metrics=["sparse_categorical_accuracy"],
+    )
+    model.summary()
+
+    checkpoint = keras.callbacks.ModelCheckpoint("../data/model.keras", monitor='loss', verbose=1, save_best_only=True, mode='min')
+    earlystopping = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
+    callbacks = [earlystopping, checkpoint]
+    print("1")
+    model.fit(
+        x_train,
+        y_train,
+        validation_split=0.2,
+        epochs=150,
+        batch_size=64,
+        callbacks=callbacks,
+    )
+    print("2")
+
+    model.evaluate(x_test, y_test, verbose=1)
+    print("3")

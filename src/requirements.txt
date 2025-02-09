@@ -5,3 +5,4 @@ click
 pandas
 numpy
 kagglehub
+tensorflow
