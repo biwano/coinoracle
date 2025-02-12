@@ -1,6 +1,5 @@
 import click
 from datetime import datetime, timedelta, date
-import kagglehub
 import csv
 import pytz
 from utils import save_data
@@ -8,6 +7,7 @@ from utils import save_data
 FILE = "/home/biwano/.cache/kagglehub/datasets/oscardavidperilla/historical-bitcoin-prices-btc/versions/1/BTCUSDT_1h.csv"
 @click.command()
 def kaggle_fetch():
+    import kagglehub
     path = kagglehub.dataset_download("oscardavidperilla/historical-bitcoin-prices-btc")
 
     print("Path to dataset files:", path)

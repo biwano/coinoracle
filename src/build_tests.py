@@ -2,7 +2,6 @@
 import click
 from datetime import date, timedelta
 from utils import read_data, CLOSE
-import numpy
 
 FEATURES = 2
 FOLDER = "../data"
@@ -60,6 +59,7 @@ def build_one_test(test_date, withPrediction = True):
     return res
 
 def build(name, start_date, end_date):
+    import numpy
     raw_data = []
     test_date = end_date
     categories = [0,0,0]

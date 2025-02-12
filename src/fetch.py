@@ -12,7 +12,7 @@ def ts(time: datetime):
 def fetch_one(startTime: datetime) -> list:
     data = load_data(startTime)
     
-    if not data.any():
+    if data is None:
         click.echo(f"Cache failure. Fetching")
         endTime = datetime(day=startTime.day, month=startTime.month, year=startTime.year, 
                         hour=23, minute=59, second=59,tzinfo=timezone.utc)
@@ -30,8 +30,7 @@ def fetch_one(startTime: datetime) -> list:
     return data
     
 
-@click.command()
-def fetch():
+def fetch_():
     t = datetime.now()
     startTime = datetime(day=t.day-1, month=t.month, year=t.year, tzinfo=timezone.utc)
     data = fetch_one(startTime)
@@ -39,6 +38,11 @@ def fetch():
     while len(data) == 24:
         startTime = datetime.fromtimestamp(startTime.timestamp() - 24 * 60 * 60)
         data = fetch_one(startTime)
+
+
+@click.command()
+def fetch():
+    return fetch_()
     
 
     

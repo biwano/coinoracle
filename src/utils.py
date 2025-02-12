@@ -1,7 +1,6 @@
-
+import click
 import numpy
 import os
-import click
 
 FOLDER = "../data"
 
@@ -17,8 +16,6 @@ def load_data(date):
     if slug in data_cache:
         return data_cache[slug]
     
-    click.echo(f"Reading {filename} {date}")
-    
     if os.path.isfile(filename):
         data = numpy.loadtxt(filename, delimiter="\t")
         data_cache[slug] = data
@@ -27,6 +24,7 @@ def load_data(date):
 
 def save_data(date, raw_data):
     filename = f"{FOLDER}/{date.year:04}-{date.month:02}-{date.day:02}.csv"
+    click.echo(f"Saving data {filename}")
     data = numpy.asarray(raw_data)
     numpy.savetxt(filename, data, delimiter="\t")
     return data
