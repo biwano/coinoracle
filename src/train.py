@@ -74,7 +74,7 @@ def train():
         head_size=256,
         num_heads=4,
         ff_dim=4,
-        num_transformer_blocks=4,
+        num_transformer_blocks=8,
         mlp_units=[128],
         n_classes=n_classes,
         mlp_dropout=0.4,
@@ -91,7 +91,6 @@ def train():
     checkpoint = keras.callbacks.ModelCheckpoint("../data/model.keras", monitor='loss', verbose=1, save_best_only=True, mode='min')
     earlystopping = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     callbacks = [earlystopping, checkpoint]
-    print("1")
     model.fit(
         x_train,
         y_train,
@@ -100,7 +99,5 @@ def train():
         batch_size=64,
         callbacks=callbacks,
     )
-    print("2")
 
     model.evaluate(x_test, y_test, verbose=1)
-    print("3")

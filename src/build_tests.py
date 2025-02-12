@@ -6,6 +6,7 @@ import numpy
 
 FEATURES = 2
 FOLDER = "../data"
+THRESHOLD = 0.67
 
 def build_one_test(test_date):
     bases = []
@@ -22,31 +23,54 @@ def build_one_test(test_date):
         features_data.append([])
 
     result_date = test_date + timedelta(days=1)
-    tomorrow_row = read_data(result_date, 23)
-    diff = ((tomorrow_row[CLOSE] - row[CLOSE]) * 100) / row[CLOSE]
-    prediction = 1 if diff > 1 else -1 if diff < -1 else 0
+    result_row = read_data(result_date, 0)
+    diff = ((result_row[CLOSE] - row[CLOSE]) * 100) / row[CLOSE]
+    prediction = 1 if diff > THRESHOLD else -1 if diff < -THRESHOLD else 0
 
     # current day
-    for i in range(23):
-        add_features_data(read_data(test_date, 22 - i))
+    #for i in range(23):
+    #    add_features_data(read_data(test_date, 22 - i))
+
+    # last 16 days        
+    for i in range(14):
+        other_date = test_date - timedelta(days=1)
+        add_features_data(read_data(other_date, 0))
+
+    # last 3 weeks        
+    for i in range(14):
+        other_date = test_date - timedelta(weeks=1)
+        add_features_data(read_data(other_date, 0))
+
+    # last 1 months        
+    for i in range(6):
+        other_date = test_date - timedelta(days=30)
+        add_features_data(read_data(other_date, 0))
+
 
     res = [prediction]
     for i in range(FEATURES):
         res = res + features_data[i]
+
 
     return res
 
 def build(name, start_date, end_date):
     raw_data = []
     test_date = end_date
+    categories = [0,0,0]
     while test_date > start_date:
         try:
-            raw_data.append(build_one_test(test_date))
-        except: 
+            res = build_one_test(test_date)
+            prediction = res[0]
+            raw_data.append(res)
+            categories[prediction + 1 ] = categories[prediction + 1 ] + 1
+        except Exception as e:  
             click.echo(f"Invalid date data {test_date}")
+            print(e)
             pass
         test_date = test_date - timedelta(days=2)
 
+    print(categories)
     filename = f"{FOLDER}/{name}.csv"
     data = numpy.asarray(raw_data)
     numpy.savetxt(filename, data, delimiter="\t")
