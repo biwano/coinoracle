@@ -2,7 +2,6 @@ import click
 import numpy as np
 import keras
 from keras import layers
-from keras import callbacks
 
 
 def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
@@ -48,14 +47,20 @@ def build_model(
 def train():
     def readucr(filename):
         data = np.loadtxt(filename, delimiter="\t")
+        print(data.shape)
         y = data[:, 0]
         x = data[:, 1:]
+        print(type(data))
+        print(x.shape[0], x.shape[1])
         return x, y.astype(int)
     
     x_train, y_train = readucr("../data/train.csv")
-    x_test, y_test = readucr("../data/test.csv")
+    #x_test, y_test = readucr("../data/test.csv")
 
+    print(x_train.shape)
     x_train = x_train.reshape((x_train.shape[0], x_train.shape[1], 1))
+    print(x_train.shape)
+    return
     x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
 
     n_classes = len(np.unique(y_train))

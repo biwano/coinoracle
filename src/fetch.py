@@ -2,9 +2,6 @@ import click
 import requests
 import math
 from datetime import datetime, timezone
-import numpy
-import os.path
-import time
 from utils import save_data, load_data
 
 FOLDER = "../data"
@@ -15,7 +12,7 @@ def ts(time: datetime):
 def fetch_one(startTime: datetime) -> list:
     data = load_data(startTime)
     
-    if not data:
+    if not data.any():
         click.echo(f"Cache failure. Fetching")
         endTime = datetime(day=startTime.day, month=startTime.month, year=startTime.year, 
                         hour=23, minute=59, second=59,tzinfo=timezone.utc)

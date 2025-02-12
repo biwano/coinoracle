@@ -8,24 +8,29 @@ FEATURES = 2
 FOLDER = "../data"
 THRESHOLD = 0.67
 
-def build_one_test(test_date):
+def build_one_test(test_date, withPrediction = True):
     bases = []
     features_data = []
+
     def add_features_data(row):
         for i in range(FEATURES):
             value = ((row[i + 1] - bases[i]) * 100) / bases[i]
             features_data[i].append(value)
 
     # init
-    row = read_data(test_date, 23)
+    date_pointer = test_date - timedelta(days=1)
+    row = read_data(date_pointer, 24)
     for i in range(FEATURES):
         bases.append(row[i + 1])
         features_data.append([])
 
-    result_date = test_date + timedelta(days=1)
-    result_row = read_data(result_date, 0)
-    diff = ((result_row[CLOSE] - row[CLOSE]) * 100) / row[CLOSE]
-    prediction = 1 if diff > THRESHOLD else -1 if diff < -THRESHOLD else 0
+    res = []
+    if withPrediction:
+        prediction_date = test_date
+        prediction_row = read_data(prediction_date, 24)
+        diff = ((prediction_row[CLOSE] - row[CLOSE]) * 100) / row[CLOSE]
+        prediction = 1 if diff > THRESHOLD else -1 if diff < -THRESHOLD else 0
+        res = [prediction]
 
     # current day
     #for i in range(23):
@@ -33,21 +38,21 @@ def build_one_test(test_date):
 
     # last 16 days        
     for i in range(14):
-        other_date = test_date - timedelta(days=1)
-        add_features_data(read_data(other_date, 0))
+        other_date = date_pointer - timedelta(days=1)
+        add_features_data(read_data(other_date, 24))
 
     # last 3 weeks        
     for i in range(14):
-        other_date = test_date - timedelta(weeks=1)
-        add_features_data(read_data(other_date, 0))
+        other_date = date_pointer - timedelta(weeks=1)
+        add_features_data(read_data(other_date, 24))
 
     # last 1 months        
     for i in range(6):
-        other_date = test_date - timedelta(days=30)
-        add_features_data(read_data(other_date, 0))
+        other_date = date_pointer - timedelta(days=30)
+        add_features_data(read_data(other_date, 24))
 
 
-    res = [prediction]
+    
     for i in range(FEATURES):
         res = res + features_data[i]
 
@@ -78,8 +83,8 @@ def build(name, start_date, end_date):
 
 @click.command()
 def build_tests():
-    build("train", date(year=2017, month=8, day=18), date(year=2022, month=1, day=8))
-    build("test", date(year=2023, month=3, day=24), date(year=2025, month=1, day=2))
+    build("train", date(year=2017, month=8, day=19), date(year=2022, month=1, day=9))
+    build("test", date(year=2023, month=3, day=25), date(year=2025, month=1, day=3))
 
 
 

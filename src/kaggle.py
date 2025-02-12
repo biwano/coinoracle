@@ -1,8 +1,6 @@
 import click
-from datetime import datetime, timezone, timedelta, date
+from datetime import datetime, timedelta, date
 import kagglehub
-import os
-import numpy
 import csv
 import pytz
 from utils import save_data

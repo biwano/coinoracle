@@ -33,4 +33,4 @@ def save_data(date, raw_data):
 
 def read_data(date, hour):
     data = load_data(date)
-    return data[hour]
+    return data[hour - 1]
