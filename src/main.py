@@ -5,6 +5,7 @@ from build_tests import build_tests
 from train import train
 from predict import predict
 from trade import trade
+from stats import stats
 
 @click.group()
 def cli():
@@ -17,6 +18,7 @@ cli.add_command(build_tests)
 cli.add_command(train)
 cli.add_command(predict)
 cli.add_command(trade)
+cli.add_command(stats)
 
 if __name__ == '__main__':
     cli()

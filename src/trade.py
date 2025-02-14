@@ -12,6 +12,7 @@ def trade():
     direction = max_index.item() - 1
     direction = -1
 
+
     res = requests.post("http://ftxbot.ilponse.com/api/bots/btc/trade", json={
         "command": "apply_desired_direction",
         "desired_direction": direction
