@@ -10,14 +10,14 @@ def predict_():
     data = [build_one_test(date.today(), withPrediction=False)]
     data = numpy.asarray(data, dtype=int)
     data = data.reshape((data.shape[0], data.shape[1], 1))
-    res = model.predict(data)
+    res = model.predict(data, verbose=None)
 
-    click.echo(res)
-   
     return res
 
 @click.command()
 def predict():
-    return predict_()
+    res = predict_()
+    click.echo(res)
+    return res
     
 
