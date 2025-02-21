@@ -67,9 +67,6 @@ def train():
     x_train = x_train[idx]
     y_train = y_train[idx]
 
-    y_train[y_train == -1] = 0
-    y_test[y_test == -1] = 0
-
     input_shape = x_train.shape[1:]
 
     model = build_model(

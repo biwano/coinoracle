@@ -29,7 +29,7 @@ def build_one_test(test_date, withPrediction = True):
         prediction_date = test_date
         prediction_row = read_data(prediction_date, 24)
         diff = ((prediction_row[CLOSE] - row[CLOSE]) * 100) / row[CLOSE]
-        prediction = 1 if diff > THRESHOLD else -1 if diff < -THRESHOLD else 0
+        prediction = 2 if diff > THRESHOLD else 0 if diff < -THRESHOLD else 1
         res = [prediction]
 
     # current day
