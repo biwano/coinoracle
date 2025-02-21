@@ -36,7 +36,8 @@ def build_one_test(test_date, withPrediction = True):
     for i in range(23):
         add_features_data(read_data(test_date, 23 - i))
 
-    # last 16 days        
+    # last 16 days     
+    """
     for i in range(14):
         date_pointer = date_pointer - timedelta(days=1)
         add_features_data(read_data(date_pointer, 24))
@@ -50,7 +51,7 @@ def build_one_test(test_date, withPrediction = True):
     for i in range(6):
         date_pointer = date_pointer - timedelta(days=30)
         add_features_data(read_data(date_pointer, 24))
-
+    """   
 
     
     for i in range(FEATURES):
