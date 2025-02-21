@@ -1,11 +1,12 @@
 
 import click
 from datetime import date, timedelta
-from utils import read_data, CLOSE
+from utils import DATA_FOLDER, read_data, CLOSE
+
 
 FEATURES = 2
-FOLDER = "../data"
 THRESHOLD = 0.67
+FEATURES_SCALE = [100, 1]
 
 def build_one_test(test_date, withPrediction = True):
     bases = []
@@ -13,7 +14,7 @@ def build_one_test(test_date, withPrediction = True):
 
     def add_features_data(row):
         for i in range(FEATURES):
-            value = ((row[i + 1] - bases[i]) * 100) / bases[i]
+            value = ((row[i + 1] - bases[i]) * FEATURES_SCALE[i]) / bases[i]
             features_data[i].append(value)
 
     # init
@@ -37,18 +38,18 @@ def build_one_test(test_date, withPrediction = True):
 
     # last 16 days        
     for i in range(14):
-        other_date = date_pointer - timedelta(days=1)
-        add_features_data(read_data(other_date, 24))
+        date_pointer = date_pointer - timedelta(days=1)
+        add_features_data(read_data(date_pointer, 24))
 
     # last 3 weeks        
     for i in range(14):
-        other_date = date_pointer - timedelta(weeks=1)
-        add_features_data(read_data(other_date, 24))
+        date_pointer = date_pointer - timedelta(weeks=1)
+        add_features_data(read_data(date_pointer, 24))
 
     # last 1 months        
     for i in range(6):
-        other_date = date_pointer - timedelta(days=30)
-        add_features_data(read_data(other_date, 24))
+        date_pointer = date_pointer - timedelta(days=30)
+        add_features_data(read_data(date_pointer, 24))
 
 
     
@@ -76,7 +77,7 @@ def build(name, start_date, end_date):
         test_date = test_date - timedelta(days=2)
 
     print(categories)
-    filename = f"{FOLDER}/{name}.csv"
+    filename = f"{DATA_FOLDER}/{name}.csv"
     data = numpy.asarray(raw_data)
     numpy.savetxt(filename, data, delimiter="\t")
     return data
