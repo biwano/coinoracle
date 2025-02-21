@@ -64,7 +64,7 @@ def build(name, start_date, end_date):
     raw_data = []
     test_date = end_date
     categories = [0,0,0]
-    while test_date > start_date:
+    while test_date >= start_date:
         try:
             res = build_one_test(test_date)
             prediction = res[0]
