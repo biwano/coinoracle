@@ -91,7 +91,7 @@ def train():
     )
     model.summary()
 
-    checkpoint = keras.callbacks.ModelCheckpoint("../data/model.keras", monitor='loss', verbose=1, save_best_only=True, mode='min')
+    checkpoint = keras.callbacks.ModelCheckpoint(f"{DATA_FOLDER}/model.keras", monitor='loss', verbose=1, save_best_only=True, mode='min')
     earlystopping = keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True)
     callbacks = [earlystopping, checkpoint]
     model.fit(
