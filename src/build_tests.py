@@ -4,7 +4,7 @@ from datetime import date, timedelta
 from utils import DATA_FOLDER, read_data, CLOSE
 
 
-FEATURES = 2
+FEATURES = 1
 THRESHOLD = 0.97
 FEATURES_SCALE = [100, 1]
 
