@@ -1,5 +1,7 @@
 import click
 
+from utils import DATA_FOLDER
+
 
 @click.command()
 def train():
@@ -53,8 +55,8 @@ def train():
         x = data[:, 1:]
         return x, y.astype(int)
     
-    x_train, y_train = readucr("../data/train.csv")
-    x_test, y_test = readucr("../data/test.csv")
+    x_train, y_train = readucr(f"{DATA_FOLDER}/train.csv")
+    x_test, y_test = readucr(f"{DATA_FOLDER}/test.csv")
 
     x_train = x_train.reshape((x_train.shape[0], x_train.shape[1], 1))
     x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
