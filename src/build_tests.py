@@ -5,7 +5,7 @@ from utils import DATA_FOLDER, read_data, CLOSE
 
 
 FEATURES = 2
-THRESHOLD = 0.67
+THRESHOLD = 0.97
 FEATURES_SCALE = [100, 1]
 
 def build_one_test(test_date, withPrediction = True):
@@ -33,8 +33,8 @@ def build_one_test(test_date, withPrediction = True):
         res = [prediction]
 
     # current day
-    #for i in range(23):
-    #    add_features_data(read_data(test_date, 22 - i))
+    for i in range(23):
+        add_features_data(read_data(test_date, 23 - i))
 
     # last 16 days        
     for i in range(14):
@@ -69,7 +69,7 @@ def build(name, start_date, end_date):
             res = build_one_test(test_date)
             prediction = res[0]
             raw_data.append(res)
-            categories[prediction + 1 ] = categories[prediction + 1 ] + 1
+            categories[prediction] = categories[prediction] + 1
         except Exception as e:  
             click.echo(f"Invalid date data {test_date}")
             print(e)
